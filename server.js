@@ -7,6 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+require('dotenv').config();
 // Serve static HTML file
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
@@ -33,7 +34,7 @@ io.on("connection", (socket) => {
         console.log("A user disconnected");
     });
 });
-
-server.listen(3000, () => {
-    console.log("Server running at : http://localhost:3000");
+const PORT=process.env.PORT || 3000;
+server.listen(3000,"0.0.0.0", () => {
+    console.log("Server running at : http://0.0.0.0:3000");
 });
