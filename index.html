@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat App</title>
+    <style>
+      body {
+        background-color: #f0f8ff; 
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        color: #09592d;
+        text-align: left;
+      }
+
+      ul#messages {
+        list-style-type: none;
+        padding: 0;
+      }
+      
+
+    ul#messages li {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 4px;
+  border-radius: 5px;
+  color: white;
+  max-width: 70%;          /* Prevents message from stretching too wide */
+  word-wrap: break-word;   /* Break long words */
+  overflow-wrap: break-word;
+}
+
+
+      .user-color-1 { background-color: #000000; } /* Blue */
+      .user-color-2 { background-color: #7aeba4; } /* Green */
+      .user-color-3 { background-color: #DC3545; } /* Red */
+      .user-color-4 { background-color: #6F42C1; } /* Purple */
+      .user-color-5 { background-color: #FD7E14; } /* Orange */
+    </style>
+  </head>
+  <body>
+    <h1>Chat App</h1>
+    <ul id="messages"></ul>
+    <form id="form">
+      <input id="input" autocomplete="off" />
+      <button>Send</button>
+    </form>
+
+    <!-- Load Socket.io client -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+      const messages = document.getElementById("messages");
+
+      const userColors = {};
+
+      function getColorClass(userId) {
+        // Assign a color class for each unique user ID
+        if (!userColors[userId]) {
+          const colorIndex = Object.keys(userColors).length % 5 + 1;
+          userColors[userId] = `user-color-${colorIndex}`;
+        }
+        return userColors[userId];
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit("chat message", input.value);
+          input.value = "";
+        }
+      });
+
+      socket.on("chat message", (data) => {
+        const item = document.createElement("li");
+        item.textContent = `${data.id}: ${data.text}`;
+        item.classList.add(getColorClass(data.id));
+        messages.appendChild(item);
+        messages.scrollTop = messages.scrollHeight; // Auto-scroll to bottom
+      });
+    </script>
+  </body>
+</html>
