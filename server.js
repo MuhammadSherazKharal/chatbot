@@ -35,6 +35,6 @@ io.on("connection", (socket) => {
     });
 });
 const PORT=process.env.PORT || 3000;
-server.listen(3000,"0.0.0.0", () => {
+server.listen(3000, () => {
     console.log("Server running at : http://0.0.0.0:3000");
 });
